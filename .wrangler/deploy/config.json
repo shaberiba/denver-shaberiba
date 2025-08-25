@@ -1,1 +1,4 @@
-{"configPath":"../../dist/denver_shaberiba/wrangler.json","auxiliaryWorkers":[]}
+{
+    "configPath": "../../dist/denver_shaberiba/wrangler.json",
+    "auxiliaryWorkers": []
+}
