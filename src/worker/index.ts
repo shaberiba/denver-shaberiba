@@ -1,6 +1,7 @@
 import { Hono } from "hono";
 import { cors } from 'hono/cors'
 import { FacebookEventsResponse } from "./facebookEvent";
+import { ContentfulStatusCode } from "hono/utils/http-status";
 
 const app = new Hono<{ Bindings: Env }>();
 
@@ -55,14 +56,15 @@ app.get('/api/events', async (c) => {
         })
 
         if (!response.ok) {
-            const errorData = await response.json()
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            const errorData: any = await response.json();
             console.error('Facebook API Error:', errorData)
 
             return c.json({
                 error: 'Facebook API Error',
                 message: errorData.error?.message || 'Failed to fetch events',
                 status: response.status
-            }, response.status)
+            }, response.status as ContentfulStatusCode)
         }
 
         const facebookData: FacebookEventsResponse = await response.json()
