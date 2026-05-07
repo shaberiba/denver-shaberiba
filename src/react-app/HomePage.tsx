@@ -8,7 +8,7 @@ const Header = () => (
       <div className="header-left">
         <p className="header-eyebrow">Denver, Colorado</p>
         <h1 className="header-name-jp">しゃべり場</h1>
-        <p className="header-name-en">Denver Shaberiba</p>
+        <p className="header-name-en">Shaberiba</p>
       </div>
     </div>
     <p className="header-tagline">
