@@ -274,6 +274,17 @@ a:hover { color: var(--red-dark); }
   cursor: default;
 }
 
+.ant-picker-calendar .ant-picker-cell-selected:not(.ant-picker-cell-today) .ant-picker-cell-inner,
+.ant-picker-calendar .ant-picker-cell-in-view.ant-picker-cell-selected:not(.ant-picker-cell-today) .ant-picker-cell-inner {
+  background: transparent !important;
+  color: var(--text) !important;
+  font-weight: 400 !important;
+}
+
+.ant-picker-calendar .ant-picker-cell:not(.ant-picker-cell-in-view) {
+  visibility: hidden;
+}
+
 .ant-picker-cell:has(.event-link) .ant-picker-cell-inner {
   background: rgba(200, 16, 46, 0.08);
   border-radius: 6px 6px 0 0;
