@@ -10,7 +10,7 @@ app.get("/api/", (c) => c.json({ name: "Cloudflare" }));
 
 // Environment variables interface for Cloudflare Workers
 interface Env {
-    FACEBOOK_APP_ACCESS_TOKEN: string
+    FACEBOOK_PAGE_ACCESS_TOKEN: string
     FACEBOOK_PAGE_ID: string
 }
 
@@ -20,15 +20,17 @@ app.use('/api/*', cors())
 // Facebook Events endpoint
 app.get('/api/events', async (c) => {
     try {
-        const { FACEBOOK_APP_ACCESS_TOKEN, FACEBOOK_PAGE_ID } = c.env
+        const { FACEBOOK_PAGE_ACCESS_TOKEN, FACEBOOK_PAGE_ID } = c.env
 
         // Check if required environment variables are set
-        if (!FACEBOOK_APP_ACCESS_TOKEN || !FACEBOOK_PAGE_ID) {
+        if (!FACEBOOK_PAGE_ACCESS_TOKEN || !FACEBOOK_PAGE_ID) {
             return c.json({
                 error: 'Missing required environment variables',
-                message: 'FACEBOOK_APP_ACCESS_TOKEN and FACEBOOK_PAGE_ID must be set'
+                message: 'FACEBOOK_PAGE_ACCESS_TOKEN and FACEBOOK_PAGE_ID must be set'
             }, 500)
         }
+
+        const accessToken = FACEBOOK_PAGE_ACCESS_TOKEN
 
         // Optional query parameters
         const since = c.req.query('since') // Format: YYYY-MM-DD
@@ -37,7 +39,7 @@ app.get('/api/events', async (c) => {
 
         let fbUrl = `https://graph.facebook.com/v23.0/${FACEBOOK_PAGE_ID}/events`
         const params = new URLSearchParams({
-            access_token: FACEBOOK_APP_ACCESS_TOKEN,
+            access_token: accessToken,
             limit: limit
         })
 
