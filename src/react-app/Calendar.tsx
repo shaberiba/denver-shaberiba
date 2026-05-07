@@ -47,17 +47,20 @@ const EventCalendar = ({ data, loading }: EventCalendarProps) => {
   const cellRenderer = (value: Dayjs) => {
     const dayEvents = allEvents[value.format(dateFormat)];
     if (!dayEvents) return null;
-    return dayEvents.map(fbe => (
-      <Badge
-        key={fbe.id}
-        color="#C8102E"
-        text={
-          <span style={{ fontSize: '0.82rem', lineHeight: 1.4, color: 'var(--text)' }}>
-            {fbe.name}
-          </span>
-        }
-      />
-    ));
+    return dayEvents.map(fbe => {
+      const time = dayjs(fbe.start_time).format('h:mm A');
+      return (
+        <Badge
+          key={fbe.id}
+          color="#C8102E"
+          text={
+            <span style={{ fontSize: '0.82rem', lineHeight: 1.4, color: 'var(--text)' }}>
+              {time} · {fbe.name}
+            </span>
+          }
+        />
+      );
+    });
   };
 
   return (
