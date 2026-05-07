@@ -269,6 +269,88 @@ a:hover { color: var(--red-dark); }
   position: relative;
 }
 
+.ant-picker-calendar .ant-picker-cell,
+.ant-picker-calendar .ant-picker-content th {
+  cursor: default;
+}
+
+.ant-picker-cell:has(.event-link) .ant-picker-cell-inner {
+  background: rgba(200, 16, 46, 0.08);
+  border-radius: 6px 6px 0 0;
+  transition: background 0.15s ease;
+}
+
+.ant-picker-cell:has(.event-link):hover .ant-picker-cell-inner {
+  background: rgba(200, 16, 46, 0.15) !important;
+}
+
+[data-theme="dark"] .ant-picker-cell:has(.event-link) .ant-picker-cell-inner {
+  background: rgba(200, 16, 46, 0.18);
+}
+
+[data-theme="dark"] .ant-picker-cell:has(.event-link):hover .ant-picker-cell-inner {
+  background: rgba(200, 16, 46, 0.3) !important;
+}
+
+.event-link {
+  display: block;
+  text-decoration: none;
+  border-radius: 0;
+  padding: 1px 4px;
+  background: rgba(200, 16, 46, 0.07);
+  transition: background 0.15s ease;
+}
+.event-link:last-child {
+  border-radius: 0 0 6px 6px;
+}
+.event-link:hover {
+  background: rgba(200, 16, 46, 0.15);
+}
+
+[data-theme="dark"] .event-link {
+  background: rgba(200, 16, 46, 0.18);
+}
+[data-theme="dark"] .event-link:hover {
+  background: rgba(200, 16, 46, 0.3);
+}
+
+/* ── Calendar custom header ── */
+.cal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 0.75rem 0.75rem;
+}
+
+.cal-header-label {
+  font-family: var(--font-body);
+  font-size: 0.82rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.cal-header-btn {
+  background: none;
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  line-height: 1;
+  transition: border-color 0.2s ease, color 0.2s ease;
+}
+.cal-header-btn:hover {
+  border-color: var(--red);
+  color: var(--red);
+}
+
 .calendar-loading-overlay {
   position: absolute;
   inset: 0;

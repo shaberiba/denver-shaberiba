@@ -3,6 +3,7 @@ import { FacebookEventData } from "../worker/facebookEvent";
 import { Badge, Calendar, Spin } from "antd";
 import dayjs, { Dayjs } from 'dayjs';
 import { useMemo } from "react";
+import { ExternalLink } from "lucide-react";
 
 const dateFormat = 'YYYY-MM-DD';
 
@@ -50,15 +51,23 @@ const EventCalendar = ({ data, loading }: EventCalendarProps) => {
     return dayEvents.map(fbe => {
       const time = dayjs(fbe.start_time).format('h:mm A');
       return (
-        <Badge
+        <a
           key={fbe.id}
-          color="#C8102E"
-          text={
-            <span style={{ fontSize: '0.82rem', lineHeight: 1.4, color: 'var(--text)' }}>
-              {time} · {fbe.name}
-            </span>
-          }
-        />
+          href={`https://www.facebook.com/events/${fbe.id}/`}
+          target="_blank"
+          rel="noreferrer"
+          className="event-link"
+        >
+          <Badge
+            color="#C8102E"
+            text={
+              <span style={{ fontSize: '0.82rem', lineHeight: 1.4, color: 'var(--text)' }}>
+                {time} · {fbe.name}
+                <ExternalLink size={10} style={{ opacity: 0.5, marginLeft: '0.2rem', verticalAlign: 'middle' }} />
+              </span>
+            }
+          />
+        </a>
       );
     });
   };
@@ -80,6 +89,21 @@ const EventCalendar = ({ data, loading }: EventCalendarProps) => {
           fullscreen={false}
           cellRender={cellRenderer}
           style={{ opacity: loading ? 0.35 : 1, transition: 'opacity 0.3s ease' }}
+          headerRender={({ value, onChange }) => (
+            <div className="cal-header">
+              <button
+                className="cal-header-btn"
+                onClick={() => onChange(value.subtract(1, 'month'))}
+                aria-label="Previous month"
+              >‹</button>
+              <span className="cal-header-label">{value.format('MMMM YYYY')}</span>
+              <button
+                className="cal-header-btn"
+                onClick={() => onChange(value.add(1, 'month'))}
+                aria-label="Next month"
+              >›</button>
+            </div>
+          )}
         />
       </div>
     </div>
