@@ -7,7 +7,7 @@ const Header = () => (
     <div className="header-inner">
       <div className="header-left">
         <p className="header-eyebrow">Denver, Colorado</p>
-        <h1 className="header-name-jp">しゃべり場</h1>
+        <h1 className="header-name-jp">喋り場</h1>
         <p className="header-name-en">Shaberiba</p>
       </div>
     </div>
