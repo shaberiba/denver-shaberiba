@@ -1,6 +1,6 @@
 import { Dropdown, Modal } from "antd";
 import type { MenuProps } from "antd";
-import { CalendarPlus, ExternalLink, Users } from "lucide-react";
+import { CalendarPlus, ExternalLink } from "lucide-react";
 import { FacebookEventData } from "../worker/facebookEvent";
 import { formatEventTime, getEventAddress } from "./hooks/useFacebookEvents";
 import { downloadICSFile, getGoogleCalendarUrl, getOutlookCalendarUrl } from "./utils/calendarExport";
@@ -29,7 +29,6 @@ export const EventDetailsModal = ({ event, onClose }: EventDetailsModalProps) =>
   };
 
   const address = event ? getEventAddress(event.place) : '';
-  const hasCounts = event && (event.attending_count !== undefined || event.interested_count !== undefined);
 
   return (
     <Modal
@@ -49,15 +48,6 @@ export const EventDetailsModal = ({ event, onClose }: EventDetailsModalProps) =>
             <h3 className="event-modal-title">{event.name}</h3>
             <p className="event-modal-meta">{formatEventTime(event.start_time, event.end_time)}</p>
             {address && <p className="event-modal-meta">{address}</p>}
-            {hasCounts && (
-              <p className="event-modal-meta event-modal-counts">
-                <Users size={13} style={{ verticalAlign: 'middle', marginRight: '0.35rem', opacity: 0.7 }} />
-                {[
-                  event.attending_count !== undefined ? `${event.attending_count} going` : null,
-                  event.interested_count !== undefined ? `${event.interested_count} interested` : null,
-                ].filter(Boolean).join(' · ')}
-              </p>
-            )}
             {event.description && (
               <p className="event-modal-description">{event.description}</p>
             )}

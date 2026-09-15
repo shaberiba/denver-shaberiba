@@ -28,8 +28,6 @@ export interface FacebookEventData {
     cover?: {
         source: string;
     };
-    attending_count?: number;
-    interested_count?: number;
     event_times?: FacebookEventTime[]; // For recurring events
 }
 export interface FacebookEventsResponse {

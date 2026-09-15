@@ -398,11 +398,6 @@ a:hover { color: var(--red-dark); }
   margin: 0 0 0.35rem;
 }
 
-.event-modal-counts {
-  display: flex;
-  align-items: center;
-}
-
 .event-modal-description {
   font-size: 0.88rem;
   line-height: 1.55;
