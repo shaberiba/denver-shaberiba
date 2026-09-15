@@ -303,11 +303,14 @@ a:hover { color: var(--red-dark); }
   cursor: default;
 }
 
+.ant-picker-calendar .ant-picker-cell-inner {
+  color: var(--text) !important;
+  font-weight: 400 !important;
+}
+
 .ant-picker-calendar .ant-picker-cell-selected .ant-picker-cell-inner,
 .ant-picker-calendar .ant-picker-cell-in-view.ant-picker-cell-selected .ant-picker-cell-inner {
   background: transparent !important;
-  color: var(--text) !important;
-  font-weight: 400 !important;
 }
 
 .ant-picker-calendar .ant-picker-cell:not(.ant-picker-cell-in-view) {
