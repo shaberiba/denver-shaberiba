@@ -65,7 +65,10 @@ const EventCalendar = ({ data, loading }: EventCalendarProps) => {
           key={fbe.id}
           type="button"
           className="event-link"
-          onClick={() => setSelectedEvent(fbe)}
+          onClick={(e) => {
+            e.stopPropagation();
+            setSelectedEvent(fbe);
+          }}
         >
           <Badge
             color="#C8102E"
