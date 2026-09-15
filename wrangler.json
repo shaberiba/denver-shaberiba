@@ -14,4 +14,13 @@
     "directory": "./dist/client",
     "not_found_handling": "single-page-application"
   },
+  "triggers": {
+    "crons": ["0 13 * * 0"]
+  },
+  "kv_namespaces": [
+    {
+      "binding": "FB_TOKEN_KV",
+      "id": "423a7e7c39314cad85b5f733f1a1c211"
+    }
+  ],
 }

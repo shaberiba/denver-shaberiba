@@ -2,6 +2,7 @@ import { Hono } from "hono";
 import { cors } from 'hono/cors'
 import { FacebookEventsResponse } from "./facebookEvent";
 import { buildEventsICS } from "./calendarFeed";
+import { getPageAccessToken, refreshPageAccessToken, TokenEnv } from "./tokenRefresh";
 import { ContentfulStatusCode } from "hono/utils/http-status";
 
 const app = new Hono<{ Bindings: Env }>();
@@ -10,9 +11,10 @@ app.get("/api/", (c) => c.json({ name: "Cloudflare" }));
 
 
 // Environment variables interface for Cloudflare Workers
-interface Env {
-    FACEBOOK_PAGE_ACCESS_TOKEN: string
+interface Env extends TokenEnv {
     FACEBOOK_PAGE_ID: string
+    // Optional: enables POST /api/admin/refresh-token for on-demand testing of the token refresh
+    ADMIN_REFRESH_SECRET?: string
 }
 
 // Enable CORS for frontend requests
@@ -29,15 +31,22 @@ const fetchFacebookEvents = async (
     env: Env,
     params: { since?: string; until?: string; limit?: string }
 ): Promise<FacebookEventsResponse> => {
-    const { FACEBOOK_PAGE_ACCESS_TOKEN, FACEBOOK_PAGE_ID } = env
+    const { FACEBOOK_PAGE_ID } = env
 
-    if (!FACEBOOK_PAGE_ACCESS_TOKEN || !FACEBOOK_PAGE_ID) {
-        throw new FacebookApiError('FACEBOOK_PAGE_ACCESS_TOKEN and FACEBOOK_PAGE_ID must be set', 500)
+    if (!FACEBOOK_PAGE_ID) {
+        throw new FacebookApiError('FACEBOOK_PAGE_ID must be set', 500)
+    }
+
+    let accessToken: string
+    try {
+        accessToken = await getPageAccessToken(env)
+    } catch (error) {
+        throw new FacebookApiError(error instanceof Error ? error.message : 'No Facebook access token available', 500)
     }
 
     let fbUrl = `https://graph.facebook.com/v23.0/${FACEBOOK_PAGE_ID}/events`
     const searchParams = new URLSearchParams({
-        access_token: FACEBOOK_PAGE_ACCESS_TOKEN,
+        access_token: accessToken,
         limit: params.limit || '50',
         fields: 'id,name,description,start_time,end_time,place{name,location},cover{source},event_times',
     })
@@ -122,4 +131,42 @@ app.get('/api/events/calendar.ics', async (c) => {
     }
 })
 
-export default app;
+// On-demand token refresh, for testing without waiting for the weekly cron.
+// Disabled unless ADMIN_REFRESH_SECRET is set, and requires it as a bearer token.
+app.post('/api/admin/refresh-token', async (c) => {
+    const { ADMIN_REFRESH_SECRET } = c.env
+
+    if (!ADMIN_REFRESH_SECRET) {
+        return c.json({ error: 'Not enabled', message: 'ADMIN_REFRESH_SECRET is not set' }, 404)
+    }
+
+    const auth = c.req.header('Authorization')
+    if (auth !== `Bearer ${ADMIN_REFRESH_SECRET}`) {
+        return c.json({ error: 'Unauthorized' }, 401)
+    }
+
+    try {
+        const result = await refreshPageAccessToken(c.env)
+        return c.json({ ok: true, refreshedAt: result.refreshedAt, expiresInSeconds: result.expiresInSeconds })
+    } catch (error) {
+        console.error('Token refresh failed:', error)
+        return c.json({
+            error: 'Token refresh failed',
+            message: error instanceof Error ? error.message : 'Unknown error',
+        }, 500)
+    }
+})
+
+export default {
+    fetch: app.fetch,
+    // Runs on the wrangler.json cron schedule to keep the Facebook page token fresh
+    // without ever needing a manually re-uploaded secret.
+    scheduled: async (_controller, env: Env) => {
+        try {
+            const result = await refreshPageAccessToken(env)
+            console.log('Facebook page token refreshed at', result.refreshedAt)
+        } catch (error) {
+            console.error('Scheduled Facebook token refresh failed:', error)
+        }
+    },
+} satisfies ExportedHandler<Env>;
