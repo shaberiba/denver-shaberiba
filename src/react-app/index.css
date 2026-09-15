@@ -232,6 +232,35 @@ a:hover { color: var(--red-dark); }
   letter-spacing: 0.05em;
 }
 
+.panel-heading-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.subscribe-all-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  flex-shrink: 0;
+  margin-top: 0.15rem;
+  padding: 0.35rem 0.65rem;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--text-muted);
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  cursor: pointer;
+  transition: border-color 0.2s ease, color 0.2s ease;
+}
+.subscribe-all-btn:hover {
+  border-color: var(--red);
+  color: var(--red);
+}
+
 .panel-rule {
   height: 1.5px;
   border: none;
@@ -285,44 +314,73 @@ a:hover { color: var(--red-dark); }
   visibility: hidden;
 }
 
-.ant-picker-cell:has(.event-link) .ant-picker-cell-inner {
+.ant-picker-cell:has(.event-row) .ant-picker-cell-inner {
   background: rgba(200, 16, 46, 0.08);
   border-radius: 6px 6px 0 0;
   transition: background 0.15s ease;
 }
 
-.ant-picker-cell:has(.event-link):hover .ant-picker-cell-inner {
+.ant-picker-cell:has(.event-row):hover .ant-picker-cell-inner {
   background: rgba(200, 16, 46, 0.15) !important;
 }
 
-[data-theme="dark"] .ant-picker-cell:has(.event-link) .ant-picker-cell-inner {
+[data-theme="dark"] .ant-picker-cell:has(.event-row) .ant-picker-cell-inner {
   background: rgba(200, 16, 46, 0.18);
 }
 
-[data-theme="dark"] .ant-picker-cell:has(.event-link):hover .ant-picker-cell-inner {
+[data-theme="dark"] .ant-picker-cell:has(.event-row):hover .ant-picker-cell-inner {
   background: rgba(200, 16, 46, 0.3) !important;
+}
+
+.event-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2px;
+  border-radius: 0;
+  padding: 1px 2px 1px 4px;
+  background: rgba(200, 16, 46, 0.07);
+  transition: background 0.15s ease;
+}
+.event-row:last-child {
+  border-radius: 0 0 6px 6px;
+}
+.event-row:hover {
+  background: rgba(200, 16, 46, 0.15);
+}
+
+[data-theme="dark"] .event-row {
+  background: rgba(200, 16, 46, 0.18);
+}
+[data-theme="dark"] .event-row:hover {
+  background: rgba(200, 16, 46, 0.3);
 }
 
 .event-link {
   display: block;
+  flex: 1;
+  min-width: 0;
   text-decoration: none;
-  border-radius: 0;
-  padding: 1px 4px;
-  background: rgba(200, 16, 46, 0.07);
-  transition: background 0.15s ease;
-}
-.event-link:last-child {
-  border-radius: 0 0 6px 6px;
-}
-.event-link:hover {
-  background: rgba(200, 16, 46, 0.15);
 }
 
-[data-theme="dark"] .event-link {
-  background: rgba(200, 16, 46, 0.18);
+.event-export-btn {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  border: none;
+  border-radius: 4px;
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 0;
+  transition: background 0.15s ease, color 0.15s ease;
 }
-[data-theme="dark"] .event-link:hover {
-  background: rgba(200, 16, 46, 0.3);
+.event-export-btn:hover {
+  background: rgba(200, 16, 46, 0.2);
+  color: var(--red);
 }
 
 /* ── Calendar custom header ── */

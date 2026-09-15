@@ -1,9 +1,19 @@
 import { expandRecurringEvents, useFacebookEvents } from "./hooks/useFacebookEvents";
+import {
+  downloadAllEventsICS,
+  downloadICSFile,
+  getGoogleCalendarSubscribeUrl,
+  getGoogleCalendarUrl,
+  getOutlookCalendarSubscribeUrl,
+  getOutlookCalendarUrl,
+  getWebcalFeedUrl,
+} from "./utils/calendarExport";
 import { FacebookEventData } from "../worker/facebookEvent";
-import { Badge, Calendar, Spin } from "antd";
+import { Badge, Calendar, Dropdown, Spin } from "antd";
+import type { MenuProps } from "antd";
 import dayjs, { Dayjs } from 'dayjs';
 import { useMemo } from "react";
-import { ExternalLink } from "lucide-react";
+import { CalendarPlus, ExternalLink } from "lucide-react";
 
 const dateFormat = 'YYYY-MM-DD';
 
@@ -50,33 +60,95 @@ const EventCalendar = ({ data, loading }: EventCalendarProps) => {
     if (!dayEvents) return null;
     return dayEvents.map(fbe => {
       const time = dayjs(fbe.start_time).format('h:mm A');
+      const exportMenuItems: MenuProps['items'] = [
+        { key: 'google', label: 'Google Calendar' },
+        { key: 'outlook', label: 'Outlook' },
+        { key: 'apple', label: 'Apple Calendar (.ics)' },
+      ];
+      const handleExportClick: MenuProps['onClick'] = ({ key, domEvent }) => {
+        domEvent.stopPropagation();
+        domEvent.preventDefault();
+        if (key === 'google') {
+          window.open(getGoogleCalendarUrl(fbe), '_blank', 'noopener,noreferrer');
+        } else if (key === 'outlook') {
+          window.open(getOutlookCalendarUrl(fbe), '_blank', 'noopener,noreferrer');
+        } else if (key === 'apple') {
+          downloadICSFile(fbe);
+        }
+      };
       return (
-        <a
-          key={fbe.id}
-          href={`https://www.facebook.com/events/${fbe.id}/`}
-          target="_blank"
-          rel="noreferrer"
-          className="event-link"
-        >
-          <Badge
-            color="#C8102E"
-            text={
-              <span style={{ fontSize: '0.82rem', lineHeight: 1.4, color: 'var(--text)' }}>
-                {time} · {fbe.name}
-                <ExternalLink size={10} style={{ opacity: 0.5, marginLeft: '0.2rem', verticalAlign: 'middle' }} />
-              </span>
-            }
-          />
-        </a>
+        <div key={fbe.id} className="event-row">
+          <a
+            href={`https://www.facebook.com/events/${fbe.id}/`}
+            target="_blank"
+            rel="noreferrer"
+            className="event-link"
+          >
+            <Badge
+              color="#C8102E"
+              text={
+                <span style={{ fontSize: '0.82rem', lineHeight: 1.4, color: 'var(--text)' }}>
+                  {time} · {fbe.name}
+                  <ExternalLink size={10} style={{ opacity: 0.5, marginLeft: '0.2rem', verticalAlign: 'middle' }} />
+                </span>
+              }
+            />
+          </a>
+          <Dropdown
+            menu={{ items: exportMenuItems, onClick: handleExportClick }}
+            trigger={['click']}
+            placement="bottomRight"
+          >
+            <button
+              type="button"
+              className="event-export-btn"
+              onClick={(e) => e.stopPropagation()}
+              aria-label={`Add ${fbe.name} to calendar`}
+              title="Add to calendar"
+            >
+              <CalendarPlus size={12} />
+            </button>
+          </Dropdown>
+        </div>
       );
     });
   };
 
+  const subscribeAllMenuItems: MenuProps['items'] = [
+    { key: 'google', label: 'Google Calendar' },
+    { key: 'outlook', label: 'Outlook' },
+    { key: 'apple', label: 'Apple Calendar' },
+    { key: 'download', label: 'Download all (.ics)' },
+  ];
+  const handleSubscribeAllClick: MenuProps['onClick'] = ({ key }) => {
+    if (key === 'google') {
+      window.open(getGoogleCalendarSubscribeUrl(), '_blank', 'noopener,noreferrer');
+    } else if (key === 'outlook') {
+      window.open(getOutlookCalendarSubscribeUrl(), '_blank', 'noopener,noreferrer');
+    } else if (key === 'apple') {
+      window.location.href = getWebcalFeedUrl();
+    } else if (key === 'download') {
+      downloadAllEventsICS();
+    }
+  };
+
   return (
     <div className="panel anim-2">
-      <div className="panel-heading">
-        <h2 className="panel-heading-en">Upcoming Events</h2>
-        <span className="panel-heading-jp">イベント</span>
+      <div className="panel-heading-row">
+        <div className="panel-heading">
+          <h2 className="panel-heading-en">Upcoming Events</h2>
+          <span className="panel-heading-jp">イベント</span>
+        </div>
+        <Dropdown
+          menu={{ items: subscribeAllMenuItems, onClick: handleSubscribeAllClick }}
+          trigger={['click']}
+          placement="bottomRight"
+        >
+          <button type="button" className="subscribe-all-btn">
+            <CalendarPlus size={14} />
+            <span>Add all to calendar</span>
+          </button>
+        </Dropdown>
       </div>
       <hr className="panel-rule" />
       <div className="calendar-panel-inner">
