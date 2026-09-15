@@ -39,6 +39,7 @@ const fetchFacebookEvents = async (
     const searchParams = new URLSearchParams({
         access_token: FACEBOOK_PAGE_ACCESS_TOKEN,
         limit: params.limit || '50',
+        fields: 'id,name,description,start_time,end_time,place{name,location},cover{source},attending_count,interested_count,event_times',
     })
 
     if (params.since) searchParams.append('since', params.since)

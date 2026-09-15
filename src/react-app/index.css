@@ -314,73 +314,126 @@ a:hover { color: var(--red-dark); }
   visibility: hidden;
 }
 
-.ant-picker-cell:has(.event-row) .ant-picker-cell-inner {
+.ant-picker-cell:has(.event-link) .ant-picker-cell-inner {
   background: rgba(200, 16, 46, 0.08);
   border-radius: 6px 6px 0 0;
   transition: background 0.15s ease;
 }
 
-.ant-picker-cell:has(.event-row):hover .ant-picker-cell-inner {
+.ant-picker-cell:has(.event-link):hover .ant-picker-cell-inner {
   background: rgba(200, 16, 46, 0.15) !important;
 }
 
-[data-theme="dark"] .ant-picker-cell:has(.event-row) .ant-picker-cell-inner {
+[data-theme="dark"] .ant-picker-cell:has(.event-link) .ant-picker-cell-inner {
   background: rgba(200, 16, 46, 0.18);
 }
 
-[data-theme="dark"] .ant-picker-cell:has(.event-row):hover .ant-picker-cell-inner {
+[data-theme="dark"] .ant-picker-cell:has(.event-link):hover .ant-picker-cell-inner {
   background: rgba(200, 16, 46, 0.3) !important;
-}
-
-.event-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 2px;
-  border-radius: 0;
-  padding: 1px 2px 1px 4px;
-  background: rgba(200, 16, 46, 0.07);
-  transition: background 0.15s ease;
-}
-.event-row:last-child {
-  border-radius: 0 0 6px 6px;
-}
-.event-row:hover {
-  background: rgba(200, 16, 46, 0.15);
-}
-
-[data-theme="dark"] .event-row {
-  background: rgba(200, 16, 46, 0.18);
-}
-[data-theme="dark"] .event-row:hover {
-  background: rgba(200, 16, 46, 0.3);
 }
 
 .event-link {
   display: block;
-  flex: 1;
-  min-width: 0;
-  text-decoration: none;
+  width: 100%;
+  border: none;
+  border-radius: 0;
+  padding: 1px 4px;
+  background: rgba(200, 16, 46, 0.07);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+.event-link:last-child {
+  border-radius: 0 0 6px 6px;
+}
+.event-link:hover {
+  background: rgba(200, 16, 46, 0.15);
 }
 
-.event-export-btn {
-  flex-shrink: 0;
+[data-theme="dark"] .event-link {
+  background: rgba(200, 16, 46, 0.18);
+}
+[data-theme="dark"] .event-link:hover {
+  background: rgba(200, 16, 46, 0.3);
+}
+
+/* ── Event details modal ── */
+.event-modal .ant-modal-content {
+  padding: 0;
+  overflow: hidden;
+}
+
+.event-modal .ant-modal-close {
+  top: 12px;
+  right: 12px;
+  color: #fff;
+  background: rgba(0, 0, 0, 0.35);
+  border-radius: 50%;
+}
+
+.event-modal-cover {
+  display: block;
+  width: 100%;
+  height: 220px;
+  object-fit: cover;
+}
+
+.event-modal-body {
+  padding: 1.5rem;
+}
+
+.event-modal-title {
+  font-family: var(--font-display);
+  font-size: 1.4rem;
+  font-weight: 500;
+  color: var(--text);
+  margin: 0 0 0.6rem;
+  line-height: 1.25;
+}
+
+.event-modal-meta {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin: 0 0 0.35rem;
+}
+
+.event-modal-counts {
+  display: flex;
+  align-items: center;
+}
+
+.event-modal-description {
+  font-size: 0.88rem;
+  line-height: 1.55;
+  color: var(--text);
+  white-space: pre-line;
+  margin: 1rem 0 0;
+  max-height: 220px;
+  overflow-y: auto;
+}
+
+.event-modal-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border);
+}
+
+.event-modal-fb-link {
   display: inline-flex;
   align-items: center;
-  justify-content: center;
-  width: 18px;
-  height: 18px;
-  border: none;
-  border-radius: 4px;
-  background: transparent;
-  color: var(--text-muted);
-  cursor: pointer;
-  padding: 0;
-  transition: background 0.15s ease, color 0.15s ease;
-}
-.event-export-btn:hover {
-  background: rgba(200, 16, 46, 0.2);
+  gap: 0.3rem;
   color: var(--red);
+  font-size: 0.85rem;
+  text-decoration: none;
+}
+.event-modal-fb-link:hover {
+  text-decoration: underline;
 }
 
 /* ── Calendar custom header ── */

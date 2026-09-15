@@ -1,19 +1,17 @@
 import { expandRecurringEvents, useFacebookEvents } from "./hooks/useFacebookEvents";
 import {
   downloadAllEventsICS,
-  downloadICSFile,
   getGoogleCalendarSubscribeUrl,
-  getGoogleCalendarUrl,
   getOutlookCalendarSubscribeUrl,
-  getOutlookCalendarUrl,
   getWebcalFeedUrl,
 } from "./utils/calendarExport";
+import { EventDetailsModal } from "./EventDetailsModal";
 import { FacebookEventData } from "../worker/facebookEvent";
 import { Badge, Calendar, Dropdown, Spin } from "antd";
 import type { MenuProps } from "antd";
 import dayjs, { Dayjs } from 'dayjs';
-import { useMemo } from "react";
-import { CalendarPlus, ExternalLink } from "lucide-react";
+import { useMemo, useState } from "react";
+import { CalendarPlus } from "lucide-react";
 
 const dateFormat = 'YYYY-MM-DD';
 
@@ -46,6 +44,8 @@ interface EventCalendarProps {
 }
 
 const EventCalendar = ({ data, loading }: EventCalendarProps) => {
+  const [selectedEvent, setSelectedEvent] = useState<FacebookEventData | null>(null);
+
   const allEvents: Record<string, FacebookEventData[]> = useMemo(() => {
     const mapping: Record<string, FacebookEventData[]> = {};
     for (const evt of expandRecurringEvents(data)) {
@@ -60,56 +60,22 @@ const EventCalendar = ({ data, loading }: EventCalendarProps) => {
     if (!dayEvents) return null;
     return dayEvents.map(fbe => {
       const time = dayjs(fbe.start_time).format('h:mm A');
-      const exportMenuItems: MenuProps['items'] = [
-        { key: 'google', label: 'Google Calendar' },
-        { key: 'outlook', label: 'Outlook' },
-        { key: 'apple', label: 'Apple Calendar (.ics)' },
-      ];
-      const handleExportClick: MenuProps['onClick'] = ({ key, domEvent }) => {
-        domEvent.stopPropagation();
-        domEvent.preventDefault();
-        if (key === 'google') {
-          window.open(getGoogleCalendarUrl(fbe), '_blank', 'noopener,noreferrer');
-        } else if (key === 'outlook') {
-          window.open(getOutlookCalendarUrl(fbe), '_blank', 'noopener,noreferrer');
-        } else if (key === 'apple') {
-          downloadICSFile(fbe);
-        }
-      };
       return (
-        <div key={fbe.id} className="event-row">
-          <a
-            href={`https://www.facebook.com/events/${fbe.id}/`}
-            target="_blank"
-            rel="noreferrer"
-            className="event-link"
-          >
-            <Badge
-              color="#C8102E"
-              text={
-                <span style={{ fontSize: '0.82rem', lineHeight: 1.4, color: 'var(--text)' }}>
-                  {time} · {fbe.name}
-                  <ExternalLink size={10} style={{ opacity: 0.5, marginLeft: '0.2rem', verticalAlign: 'middle' }} />
-                </span>
-              }
-            />
-          </a>
-          <Dropdown
-            menu={{ items: exportMenuItems, onClick: handleExportClick }}
-            trigger={['click']}
-            placement="bottomRight"
-          >
-            <button
-              type="button"
-              className="event-export-btn"
-              onClick={(e) => e.stopPropagation()}
-              aria-label={`Add ${fbe.name} to calendar`}
-              title="Add to calendar"
-            >
-              <CalendarPlus size={12} />
-            </button>
-          </Dropdown>
-        </div>
+        <button
+          key={fbe.id}
+          type="button"
+          className="event-link"
+          onClick={() => setSelectedEvent(fbe)}
+        >
+          <Badge
+            color="#C8102E"
+            text={
+              <span style={{ fontSize: '0.82rem', lineHeight: 1.4, color: 'var(--text)' }}>
+                {time} · {fbe.name}
+              </span>
+            }
+          />
+        </button>
       );
     });
   };
@@ -178,6 +144,7 @@ const EventCalendar = ({ data, loading }: EventCalendarProps) => {
           )}
         />
       </div>
+      <EventDetailsModal event={selectedEvent} onClose={() => setSelectedEvent(null)} />
     </div>
   );
 };
